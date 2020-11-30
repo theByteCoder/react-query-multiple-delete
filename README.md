@@ -1,5 +1,10 @@
 This is a POC project for applying multiple delete functionality with react-query using useMutations.
 
+We have created a hook useDeleteHook and are passing array of row ids to be delete. The hook also taken in the url, a key and querycache.
+Once the request(s) are inititated and returns a promise, we are pushing them in an array. We then attempt to resolve and return all the promises into the mutation.
+
+This was, we are waiting for all the mutation requests to complete and then proceed.
+
 steps to setup employees db -
 
 The Employees database is available from Employees DB on https://github.com/datacharmer/test_db. You can download a prepackaged archive of the data, or access the information through Git.
