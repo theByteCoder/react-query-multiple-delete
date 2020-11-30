@@ -1,1 +1,1 @@
-"# react-query-multiple-delete" 
+This is a POC project for applying multiple delete functionality with react-query using useMutations.
