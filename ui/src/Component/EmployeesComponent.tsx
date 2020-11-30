@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
-import { useQuery, useMutation, useQueryCache } from "react-query";
+import { useQuery } from "react-query";
 import useDeleteHook from "../Hooks/useDeleteHook";
 
 const BASE_URI = "http://localhost:8000/employees";
-
-const getCSRFToken = () => {
-  return document.cookie.split("=")[1];
-};
 
 const columns = [
   {
@@ -26,12 +22,10 @@ const columns = [
 
 export const EmployeesComponent = () => {
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
-  const queryCache = useQueryCache();
   const [deleteFn] = useDeleteHook(
     selectedRows,
     `${BASE_URI}/api/delete/emp_no=`,
-    "/api/getEmployees/",
-    queryCache
+    "/api/getEmployees/"
   );
 
   const getEmployees = async () => {

@@ -1,21 +1,12 @@
-import { useMutation } from "react-query";
+import { useMutation, useQueryCache } from "react-query";
 
 const getCSRFToken = () => {
   return document.cookie.split("=")[1];
 };
 
-const useDeleteFn = (
-  selectedRows: string[],
-  url: string,
-  key: string,
-  queryCache: {
-    invalidateQueries: (arg0: string) => void;
-    getQueryData: (arg0: string) => any;
-    setQueryData: (arg0: string, arg1: any) => any;
-    removeQueries: (arg0: any[]) => void;
-    refetchQueries: (arg0: string) => void;
-  }
-) => {
+const useDeleteFn = (selectedRows: string[], url: string, key: string) => {
+  const queryCache = useQueryCache();
+
   return useMutation(
     async () => {
       const promises: any[] | PromiseLike<any[]> = [];
