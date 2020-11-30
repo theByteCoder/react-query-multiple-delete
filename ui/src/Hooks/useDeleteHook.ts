@@ -1,13 +1,13 @@
 import { useMutation } from "react-query";
 
-const BASE_URI = "http://localhost:8000/employees";
-
 const getCSRFToken = () => {
   return document.cookie.split("=")[1];
 };
 
 const useDeleteFn = (
   selectedRows: string[],
+  url: string,
+  key: string,
   queryCache: {
     invalidateQueries: (arg0: string) => void;
     getQueryData: (arg0: string) => any;
@@ -18,48 +18,35 @@ const useDeleteFn = (
 ) => {
   return useMutation(
     async () => {
-      Promise.all([
-        selectedRows.forEach(async (rowId) => {
-          await fetch(`${BASE_URI}/api/delete/emp_no=${rowId}/`, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCSRFToken(),
-            },
-          });
-        }),
-      ])
-        .then((res) => {
-          // show success toast
-          return true;
-        })
-        .catch((err) => {
-          // show failure toast
-          return false;
-        });
+      const promises: any[] | PromiseLike<any[]> = [];
+      selectedRows.forEach((rowId) => {
+        promises.push(
+          new Promise((resolve, reject) => {
+            fetch(`${url}${rowId}/`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(),
+              },
+            }).then(
+              (response) => {
+                const result = response.json();
+                resolve(result);
+              },
+              (error) => {
+                reject(error);
+              }
+            );
+          })
+        );
+      });
+      return Promise.all(promises);
     },
 
     {
-      onMutate: () => {
-        const previousValue = queryCache.getQueryData("/api/getEmployees/");
-        const updatedValue = [...previousValue];
-        const removeDeleted = updatedValue.filter((eachValue) => {
-          return !selectedRows.includes(eachValue.emp_no.toString());
-        });
-        queryCache.setQueryData("/api/getEmployees/", removeDeleted);
-        return () =>
-          queryCache.setQueryData("/api/getEmployees/", previousValue);
-      },
-      onError: (error) => {},
-      onSettled: (data, error) => {
-        const previousValue = queryCache.getQueryData("/api/getEmployees/");
-        const updatedValue = [...previousValue];
-        const removeDeleted = updatedValue.filter((eachValue) => {
-          return !selectedRows.includes(eachValue.emp_no.toString());
-        });
-        queryCache.removeQueries(["/api/getEmployees/", removeDeleted]);
-        queryCache.setQueryData("/api/getEmployees/", previousValue);
-        queryCache.refetchQueries("/api/getEmployees/");
+      onSettled: () => {
+        console.log("invalidateQueries");
+        queryCache.invalidateQueries(key);
       },
     }
   );
