@@ -83,32 +83,6 @@ export const EmployeesComponent = () => {
     return rows;
   };
 
-  const makeDeleteRequest = () => {
-    const promises: any[] | PromiseLike<any[]> = [];
-    selectedRows.forEach((rowId) => {
-      promises.push(
-        new Promise((resolve, reject) => {
-          fetch(`${BASE_URI}/api/delete/emp_no=${rowId}/`, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCSRFToken(),
-            },
-          }).then(
-            (response) => {
-              const result = response.json();
-              resolve(result);
-            },
-            (error) => {
-              reject(error);
-            }
-          );
-        })
-      );
-    });
-    return Promise.all(promises);
-  };
-
   const onDelete = async () => {
     deleteFn();
   };
