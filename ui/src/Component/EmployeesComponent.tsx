@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import { useQuery, useMutation, useQueryCache } from "react-query";
-// import useDeleteHook from "../Hooks/useDeleteHook";
+import useDeleteHook from "../Hooks/useDeleteHook";
 
 const BASE_URI = "http://localhost:8000/employees";
 
@@ -27,7 +27,12 @@ const columns = [
 export const EmployeesComponent = () => {
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const queryCache = useQueryCache();
-  // const [deleteFn] = useDeleteHook(selectedRows, queryCache);
+  const [deleteFn] = useDeleteHook(
+    selectedRows,
+    `${BASE_URI}/api/delete/emp_no=`,
+    "/api/getEmployees/",
+    queryCache
+  );
 
   const getEmployees = async () => {
     const response = await fetch(`${BASE_URI}/api/getEmployees/`);
@@ -78,40 +83,6 @@ export const EmployeesComponent = () => {
     return rows;
   };
 
-  // const deleteEmployees = async () => {
-  //   const response: any[] = [];
-  //   selectedRows.forEach(async (rowId) => {
-  //     response.push(
-  //       await fetch(`${BASE_URI}/api/delete/emp_no=${rowId}/`, {
-  //         method: "DELETE",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "X-CSRFToken": getCSRFToken(),
-  //         },
-  //       }).then((res) => {
-  //         return res.json();
-  //       })
-  //     );
-  //   });
-  //   return response;
-  // };
-
-  // const deleteEmployee = async () => {
-  //   const response = await fetch(
-  //     `${BASE_URI}/api/delete/emp_no=${selectedRows[0]}/`,
-  //     {
-  //       method: "DELETE",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "X-CSRFToken": getCSRFToken(),
-  //       },
-  //     }
-  //   ).then((res) => {
-  //     return res.json();
-  //   });
-  //   return response;
-  // };
-
   const makeDeleteRequest = () => {
     const promises: any[] | PromiseLike<any[]> = [];
     selectedRows.forEach((rowId) => {
@@ -138,26 +109,9 @@ export const EmployeesComponent = () => {
     return Promise.all(promises);
   };
 
-  const [mutate] = useMutation(makeDeleteRequest, {
-    onSettled: () => {
-      console.log("invalidateQueries");
-      queryCache.invalidateQueries("/api/getEmployees/");
-    },
-  });
-
   const onDelete = async () => {
-    try {
-      const data = await mutate();
-      console.log("data", data);
-      setSelectedRows([]);
-    } catch {
-      // something went wrong
-    }
+    deleteFn();
   };
-
-  // const onDelete = async () => {
-  //   deleteFn();
-  // };
 
   return results.data !== undefined ? (
     <>
