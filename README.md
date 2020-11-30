@@ -1,6 +1,6 @@
 This is a POC project for applying multiple delete functionality with react-query using useMutations.
 
-We have created a hook useDeleteHook and are passing array of row ids to be delete. The hook also taken in the url, a key and querycache.
+We have created a hook useDeleteHook and are passing array of row ids to be delete. The hook also taken in the url and a key.
 Once the request(s) are inititated and returns a promise, we are pushing them in an array. We then attempt to resolve and return all the promises into the mutation.
 
 This was, we are waiting for all the mutation requests to complete and then proceed.
