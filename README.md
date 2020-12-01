@@ -1,5 +1,8 @@
 This is a POC project for applying multiple delete functionality with react-query using useMutations.
 
+We have provided a json-server along with the project. npm start will start the json-server on localhost port 3001 and react on port 3000.
+Known issues : json-server - Multiple delete request (3+ request within a minute) crashes the server https://github.com/typicode/json-server/issues/1037. Please restart.
+
 We have created a hook useDeleteHook and are passing array of row ids to be delete. The hook also taken in the url and a key.
 Once the request(s) are inititated and returns a promise, we are pushing them in an array. We then attempt to resolve and return all the promises into the mutation.
 
