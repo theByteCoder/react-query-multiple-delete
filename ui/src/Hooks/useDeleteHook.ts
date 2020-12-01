@@ -17,10 +17,7 @@ const useDeleteFn = (
     selectedRows.forEach((rowId) => {
       promises.push(
         new Promise((resolve, reject) => {
-          // for django server
-          // fetch(`${url}${rowId}/`, {
-          // for json server
-          fetch(`${url}?${rowId}/`, {
+          fetch(`${url}${rowId}/`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
