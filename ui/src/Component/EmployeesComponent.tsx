@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Key, useEffect, useState } from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import { useQuery } from "react-query";
@@ -21,7 +21,7 @@ const columns = [
 ];
 
 export const EmployeesComponent = () => {
-  const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Key[] | string[]>([]);
   const [deleteFn] = useDeleteHook(
     selectedRows,
     `${BASE_URI}/api/delete/emp_no=`,
@@ -46,22 +46,22 @@ export const EmployeesComponent = () => {
 
   const setRows = () => {
     const rows: {
-      id: any;
-      emp_no: any;
-      birth_date: any;
-      first_name: any;
-      last_name: any;
-      gender: any;
-      hire_date: any;
+      id: string;
+      emp_no: string;
+      birth_date: string;
+      first_name: string;
+      last_name: string;
+      gender: string;
+      hire_date: string;
     }[] = [];
     results.data.forEach(
       (eachRow: {
-        emp_no: any;
-        birth_date: any;
-        first_name: any;
-        last_name: any;
-        gender: any;
-        hire_date: any;
+        emp_no: string;
+        birth_date: string;
+        first_name: string;
+        last_name: string;
+        gender: string;
+        hire_date: string;
       }) => {
         rows.push({
           id: eachRow.emp_no,
