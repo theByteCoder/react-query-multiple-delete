@@ -4,7 +4,12 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import { useQuery } from "react-query";
 import useDeleteHook from "../Hooks/useDeleteHook";
 
-const BASE_URI = "http://localhost:8000/employees";
+// BASE_URI for django server
+// const BASE_URI = "http://localhost:8000";
+// BASE_URI for json server
+const BASE_URI = "http://localhost:3001";
+
+const fetchQueryKey = "@employees";
 
 const columns = [
   {
@@ -24,17 +29,17 @@ export const EmployeesComponent = () => {
   const [selectedRows, setSelectedRows] = useState<Key[] | string[]>([]);
   const [deleteFn] = useDeleteHook(
     selectedRows,
-    `${BASE_URI}/api/delete/emp_no=`,
-    "/api/getEmployees/"
+    `${BASE_URI}/employees/`,
+    fetchQueryKey
   );
 
   const getEmployees = async () => {
-    const response = await fetch(`${BASE_URI}/api/getEmployees/`);
-    const { data } = await response.json();
+    const response = await fetch(`${BASE_URI}/employees/`);
+    const data = await response.json();
     return data;
   };
 
-  const results = useQuery("/api/getEmployees/", getEmployees);
+  const results = useQuery(fetchQueryKey, getEmployees);
 
   useEffect(() => {
     console.log("results.data", results.data);

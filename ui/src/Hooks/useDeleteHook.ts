@@ -17,7 +17,7 @@ const useDeleteFn = (
     selectedRows.forEach((rowId) => {
       promises.push(
         new Promise((resolve, reject) => {
-          fetch(`${url}${rowId}/`, {
+          fetch(`${url}${rowId}`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",

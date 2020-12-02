@@ -32,7 +32,8 @@ def get_record(request):
 def get_record_all(request):
     all_emp = Employees.objects.all().values()[:100]
     all_emp_list = list(all_emp)
-    return JsonResponse({'data' : all_emp_list}, safe=False)
+    # return JsonResponse({'data' : all_emp_list}, safe=False)
+    return JsonResponse(all_emp_list, safe=False)
 
 
 def get_record_single(request, emp_no):
@@ -67,6 +68,25 @@ def delete_record(request, emp_no):
                 return JsonResponse({'response': '404 Not Found'})
     else:
         return JsonResponse({'response': 'Incorrect request method, try DELETE'})
+
+
+def crud(request):
+    if request.method == "DELETE":
+        time.sleep(5)
+        emp_no = request.GET.get('emp_no')
+        if emp_no != "" and type(emp_no) is not None:
+            instance = Employees.objects.filter(emp_no=emp_no)
+            print(instance)
+            if instance.exists():
+                instance.delete()
+                return JsonResponse({'response': '204 Deleted'})
+            else:
+                return JsonResponse({'response': '404 Not Found'})
+    elif request.method == "GET":
+        all_emp = Employees.objects.all().values()[:100]
+        all_emp_list = list(all_emp)
+        # return JsonResponse({'data' : all_emp_list}, safe=False)
+        return JsonResponse(all_emp_list, safe=False)
 
 
 def get_last_employee_number():
