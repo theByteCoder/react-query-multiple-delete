@@ -13,26 +13,19 @@ const useDeleteFn = (
   const queryCache = useQueryCache();
 
   const makeDeleteRequest = async () => {
-    const promises: Promise<Response>[] | PromiseLike<Response[]> = [];
+    const promises: Promise<Response>[] = [];
     selectedRows.forEach((rowId) => {
       promises.push(
-        new Promise((resolve, reject) => {
-          fetch(`${url}${rowId}`, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCSRFToken(),
-            },
-          }).then(
-            (response) => {
-              const result = response.json();
-              resolve(result);
-            },
-            (error) => {
-              reject(error);
-            }
-          );
-        })
+        fetch(`${url}${rowId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
+          },
+        }).then(
+          (response) => Promise.resolve(response.json()),
+          (error) => Promise.reject(error)
+        )
       );
     });
     return Promise.all(promises);
