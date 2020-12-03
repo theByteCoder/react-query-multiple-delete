@@ -1,22 +1,17 @@
-import { Key } from "react";
+import { Key, useEffect } from "react";
 import { useMutation, useQueryCache } from "react-query";
 
 const getCSRFToken = () => {
   return document.cookie.split("=")[1];
 };
 
-const useDeleteFn = (
-  selectedRows: Key[] | string[],
-  url: string,
-  key: string
-) => {
+const useDeleteFn = (selectedRows: Key[], url: string, key: string) => {
   const queryCache = useQueryCache();
 
-  const makeDeleteRequest = async () => {
-    const promises: Promise<Response>[] = [];
-    selectedRows.forEach((rowId) => {
-      promises.push(
-        fetch(`${url}${rowId}`, {
+  const makeDeleteRequest = () => {
+    const response: Promise<Response[]> = Promise.all(
+      selectedRows.map((rowId) => {
+        return fetch(`${url}${rowId}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -25,10 +20,10 @@ const useDeleteFn = (
         }).then(
           (response) => Promise.resolve(response.json()),
           (error) => Promise.reject(error)
-        )
-      );
-    });
-    return Promise.all(promises);
+        );
+      })
+    );
+    return response;
   };
 
   return useMutation(makeDeleteRequest, {
